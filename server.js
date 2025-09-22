@@ -16,13 +16,15 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // ✅ MongoDB Connection
+// ✅ MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
-const db = mongoose.connection;
-db.once("open", () => console.log("✅ MongoDB Connected"));
-db.on("error", (err) => console.log("❌ DB Error:", err));
+  serverSelectionTimeoutMS: 5000, // ⏱ avoid infinite waiting
+  ssl: true, // ✅ ensure TLS is enabled
+})
+.then(() => console.log("✅ MongoDB Connected"))
+.catch((err) => console.error("❌ DB Connection Error:", err));
 
 // ✅ Schemas
 const OrderSchema = new mongoose.Schema({
