@@ -1,11 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { Resend } = require("resend");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 const fontkit = require('@pdf-lib/fontkit');
 const fs = require("fs");
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
 const path = require("path");
 require("dotenv").config();
 
@@ -341,37 +342,63 @@ drawText(`₹${totalAmount.toFixed(2)}`, boxX + 100, textYCentered, {
 }
 
 // ✅ Email Function
-function sendInvoiceEmail(toEmail, pdfPath, orderId) {
-  return new Promise((resolve, reject) => {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+// function sendInvoiceEmail(toEmail, pdfPath, orderId) {
+//   return new Promise((resolve, reject) => {
+//     const transporter = nodemailer.createTransport({
+//       service: "gmail",
+//       auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS,
+//       },
+//     });
 
-    const mailOptions = {
-      from: `Sri Periyandavar Pyrotech <${process.env.EMAIL_USER}>`,
+//     const mailOptions = {
+//       from: `Sri Periyandavar Pyrotech <${process.env.EMAIL_USER}>`,
+//       to: toEmail,
+//       bcc: "sppcrackers2025@gmail.com",
+//       subject: `🧨 Your Invoice - Sri Periyandavar Pyrotech Order #${orderId}`,
+//       text: `Dear Customer,\n\nThank you for your order!\nPlease find the attached invoice for your order #${orderId}.\n\nRegards,\nSri Periyandavar Pyrotech Team`,
+//       attachments: [{ filename: `invoice_${orderId}.pdf`, path: pdfPath }],
+//     };
+
+//     transporter.sendMail(mailOptions, (err, info) => {
+//       if (err) {
+//         console.error("❌ Email error:", err);
+//         reject(err);
+//       } else {
+//         console.log("✅ Email sent:", info.response);
+//         resolve();
+//       }
+//     });
+//   });
+// }
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+async function sendInvoiceEmail(toEmail, pdfPath, orderId) {
+  try {
+    const pdfFile = fs.readFileSync(pdfPath); // read pdf
+
+    await resend.emails.send({
+      from: "Sri Periyandavar Crackers <support@kgmcrackers.in>", 
       to: toEmail,
-      bcc: "sppcrackers2025@gmail.com",
-      subject: `🧨 Your Invoice - Sri Periyandavar Pyrotech Order #${orderId}`,
-      text: `Dear Customer,\n\nThank you for your order!\nPlease find the attached invoice for your order #${orderId}.\n\nRegards,\nSri Periyandavar Pyrotech Team`,
-      attachments: [{ filename: `invoice_${orderId}.pdf`, path: pdfPath }],
-    };
-
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        console.error("❌ Email error:", err);
-        reject(err);
-      } else {
-        console.log("✅ Email sent:", info.response);
-        resolve();
-      }
+      bcc: "sspcrackers2025@gmail.com",
+      subject: `🧨 Your Invoice - Sri Periyandavar Crackers Order #${orderId}`,
+      text: `Dear Customer,\n\nThank you for your order!\nPlease find the attached invoice for your order #${orderId}.\n\nRegards,\nKGM Crackers Team`,
+      attachments: [
+        {
+          filename: `invoice_${orderId}.pdf`,
+          content: pdfFile.toString("base64"), // base64 encode
+        },
+      ],
     });
-  });
-}
 
+    console.log("✅ Email sent via Resend");
+    return Promise.resolve();
+  } catch (err) {
+    console.error("❌ Resend email error:", err);
+    return Promise.reject(err);
+  }
+}
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
