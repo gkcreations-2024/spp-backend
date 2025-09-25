@@ -383,7 +383,7 @@ async function sendInvoiceEmail(toEmail, pdfPath, orderId) {
       to: toEmail,
       bcc: "sppcrackers2025@gmail.com",
       subject: `🧨 Your Invoice - Sri Periyandavar Crackers Order #${orderId}`,
-      text: `Dear Customer,\n\nThank you for your order!\nPlease find the attached invoice for your order #${orderId}.\n\nRegards,\nKGM Crackers Team`,
+      text: `Dear Customer,\n\nThank you for your order!\nPlease find the attached invoice for your order #${orderId}.\n\nRegards,\nSri Periyandavar Pyrotech Crackers Team`,
       attachments: [
         {
           filename: `invoice_${orderId}.pdf`,
