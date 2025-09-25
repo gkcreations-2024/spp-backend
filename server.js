@@ -379,9 +379,9 @@ async function sendInvoiceEmail(toEmail, pdfPath, orderId) {
     const pdfFile = fs.readFileSync(pdfPath); // read pdf
 
     await resend.emails.send({
-      from: "Sri Periyandavar Crackers <hello@resend.dev>", 
+      from: "Sri Periyandavar Crackers <support@sriperiyandavarpyrotech.in>", 
       to: toEmail,
-      bcc: "sspcrackers2025@gmail.com",
+      bcc: "sppcrackers2025@gmail.com",
       subject: `🧨 Your Invoice - Sri Periyandavar Crackers Order #${orderId}`,
       text: `Dear Customer,\n\nThank you for your order!\nPlease find the attached invoice for your order #${orderId}.\n\nRegards,\nKGM Crackers Team`,
       attachments: [
