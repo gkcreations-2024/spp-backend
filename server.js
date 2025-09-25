@@ -224,7 +224,7 @@ const spacedAddressLines = addressLines.flatMap(line => [line, '']);
   rightY -= lineHeight;
   const rightLines = [
     `Sri Periyandavar Pyrotech`,
-    `+91 86678 48501`,
+    `+91 97862 35419`,
     ...splitText('3/1320-14,R.R.NAGAR,PARAIPATTI,SIVAKASI', 70),
     `Pincode: 626189`,
     `Invoice No: INV-${order.orderId}`,
